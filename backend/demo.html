@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tree Visualizer Backend Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+        button { margin: 5px; padding: 10px 15px; background: #007acc; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #005a9e; }
+        .log { background: #f8f8f8; padding: 15px; border-radius: 5px; margin: 10px 0; max-height: 300px; overflow-y: auto; }
+        .step { margin: 5px 0; padding: 5px; border-left: 3px solid #007acc; background: #e8f4ff; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌳 Tree Visualizer Backend Demo</h1>
+        <p>Test your backend API endpoints in the browser</p>
+        
+        <div>
+            <button onclick="testHealth()">Test Health</button>
+            <button onclick="createTree()">Create Tree</button>
+            <button onclick="buildSampleTree()">Build Sample Tree</button>
+            <button onclick="showTreeState()">Show Tree State</button>
+            <button onclick="testTraversals()">Test Traversals</button>
+            <button onclick="testDeletions()">Test Deletions</button>
+        </div>
+        
+        <div id="output" class="log">
+            Click buttons to test API endpoints...
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5001';
+        let currentTreeId = 1;
+
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const div = document.createElement('div');
+            div.className = `step ${type}`;
+            div.innerHTML = `📝 ${message}`;
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        async function testAPI(endpoint, method = 'GET', data = null) {
+            try {
+                const options = {
+                    method,
+                    headers: {'Content-Type': 'application/json'}
+                };
+                if (data) options.body = JSON.stringify(data);
+                
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                const result = await response.json();
+                
+                log(`✅ ${method} ${endpoint} - Success!`, 'success');
+                return result;
+            } catch (error) {
+                log(`❌ ${method} ${endpoint} - Error: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        async function testHealth() {
+            log('Testing server health...');
+            const result = await testAPI('/health');
+            if (result) {
+                log(`Server: ${result.status} - ${result.message}`);
+            }
+        }
+
+        async function createTree() {
+            log('Creating new tree...');
+            const result = await testAPI('/api/trees/new', 'POST');
+            if (result) {
+                currentTreeId = result.treeId;
+                log(`Created tree with ID: ${currentTreeId}`);
+            }
+        }
+
+        async function buildSampleTree() {
+            log('Building sample tree with values: 50, 30, 70, 20, 40, 60, 80');
+            const values = [50, 30, 70, 20, 40, 60, 80];
+            
+            for (const value of values) {
+                const result = await testAPI(`/api/trees/${currentTreeId}/insert`, 'POST', {value});
+                if (result) {
+                    log(`Inserted ${value} - ${result.steps.length} steps`);
+                }
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        async function showTreeState() {
+            log('Getting current tree state...');
+            const result = await testAPI(`/api/trees/${currentTreeId}/state`);
+            if (result) {
+                const info = result.treeInfo;
+                log(`Tree Height: ${info.height}, Nodes: ${info.nodeCount}, Is BST: ${info.isBST}`);
+            }
+        }
+
+        async function testTraversals() {
+            log('Testing tree traversals...');
+            const inorder = await testAPI(`/api/trees/${currentTreeId}/traverse/inorder`);
+            if (inorder) {
+                const processingSteps = inorder.steps.filter(step => 
+                    step.description.includes('Processing node:')
+                );
+                const order = processingSteps.map(step => 
+                    step.description.match(/Processing node: (\d+)/)[1]
+                ).join(' → ');
+                log(`In-Order Traversal: ${order}`);
+            }
+        }
+
+        async function testDeletions() {
+            log('Testing deletion operations...');
+            
+            // Delete leaf
+            const leaf = await testAPI(`/api/trees/${currentTreeId}/delete/20`, 'DELETE');
+            if (leaf) log('Deleted leaf node 20');
+            
+            // Delete with one child
+            const oneChild = await testAPI(`/api/trees/${currentTreeId}/delete/30`, 'DELETE');
+            if (oneChild) log('Deleted node 30 (had children)');
+            
+            await showTreeState();
+        }
+    </script>
+</body>
+</html>

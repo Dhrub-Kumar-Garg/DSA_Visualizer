@@ -117,17 +117,45 @@ http://localhost:3000
 
 ###  - Binary Tree Visualizer
 <br>
+## 🌳 Binary Tree Dashboard
 
+**Full Binary Tree View**
 ![Binary Tree Full](screenshots/bt/full%20bs.jpg)
+
+**Tree After Node Insertion**
 ![Tree Added](screenshots/bt/tree%20added.jpg)
+
+**Stack Representation**
+
 ![Stack View](screenshots/bt/stack.jpg)
+
+**Result Output**
+
 ![Result View](screenshots/bt/result.jpg)
+
+**Operation History**
+
 ![History View](screenshots/bt/history.jpg)
+
 
 ---
 
 ###  Graph Visualizer
+**Dashboard Overview**
+
 ![Dashboard](screenshots/tree/dashboard.jpg)
+
+**Graph Added Successfully**
+
 ![Graph Added](screenshots/tree/GRAPH%20ADDED.jpg)
+
+**Result Output**
+
+
 ![Result View](screenshots/tree/result.jpg)
+
+**Operation History**
+
+
 ![History View](screenshots/tree/history.jpg)
+

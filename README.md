@@ -112,3 +112,22 @@ npm start
 ```
 http://localhost:3000
 ```
+
+##  Screenshots
+
+###  - Binary Tree Visualizer
+<br>
+
+![Binary Tree Full](screenshots/bt/full%20bs.jpg)
+![Tree Added](screenshots/bt/tree%20added.jpg)
+![Stack View](screenshots/bt/stack.jpg)
+![Result View](screenshots/bt/result.jpg)
+![History View](screenshots/bt/history.jpg)
+
+---
+
+###  Graph Visualizer
+![Dashboard](screenshots/tree/dashboard.jpg)
+![Graph Added](screenshots/tree/GRAPH%20ADDED.jpg)
+![Result View](screenshots/tree/result.jpg)
+![History View](screenshots/tree/history.jpg)
